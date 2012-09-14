@@ -23,7 +23,20 @@ class Showlog(Command):
                 }
             }
 
-       The response return a list with one entry per line queued up.
+       The response return a dictionary with two keys (stdout and stderr) with
+       a list of dicts per line queued up in reversed order like this::
+
+          {
+            "stderr": []
+            "stdout": [
+              {"time": 1347637994, "pid": 3001, "data": "   -v VERBOSITY, --verbosity=VERBOSITY" },
+              {"time": 1347637994, "pid": 3001, "data": " Options:" },
+              {"time": 1347637994, "pid": 3001, "data": " " },
+              {"time": 1347637994, "pid": 3001, "data": "Usage: django-debug subcommand [options] [args]" },
+                ...
+            ]
+
+          }
 
        Command Line
        ------------
