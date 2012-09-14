@@ -2,9 +2,6 @@ from circus.exc import MessageError, ArgumentError
 from circus.commands.base import Command
 from circus.stream import TailStream
 
-_INFOLINE = ("%(pid)s  %(cmdline)s %(username)s %(nice)s %(mem_info1)s "
-             "%(mem_info2)s %(cpu)s %(mem)s %(ctime)s")
-
 
 class Showlog(Command):
     """\
@@ -41,12 +38,16 @@ class Showlog(Command):
 
     def message(self, *args, **opts):
         if len(args) != 1:
-            raise ArgumentError("Please provide the watcher")
+            raise ArgumentError("Please provide the name of the watcher")
 
         return self.make_message(name=args[0])
 
     def execute(self, arbiter, props):
-        name = props.get("name")
+        try:
+            name = props["name"]
+        except KeyError:
+            raise MessageError("Please provide the name of the watcher")
+
         watcher = self._get_watcher(arbiter, name)
         results = dict(stdout=[], stderr=[])
         for channel in ("stdout", "stderr"):
