@@ -1,7 +1,25 @@
 import sys
 from Queue import Queue
+from collections import deque
 
 from circus.util import import_module, resolve_name
+
+import time
+
+
+class TailStream(deque):
+
+    def __init__(self, **kwargs):
+        deque.__init__(self, [], kwargs.pop("len", 1000))
+
+    def __call__(self, data):
+        pid = data['pid']
+        now = time.time()
+        for line in data['data'].split('\n'):
+            self.appendleft({'pid': pid, 'time': now, 'data': line})
+
+    def close(self):
+        pass
 
 
 class QueueStream(Queue):
