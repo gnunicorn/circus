@@ -89,6 +89,8 @@ class FullStats(BaseObserver):
 
     name = 'full_stats'
 
+    handle_recv = StatsdEmitter.handle_recv
+
     def look_after(self):
         info = self.call("stats")
         if info["status"] == "error":
