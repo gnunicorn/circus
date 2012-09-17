@@ -426,8 +426,12 @@ class Watcher(object):
         try:
             # sending the same signal to all the children
             for child_pid in process.children():
-                process.send_signal_child(child_pid, sig)
                 self.notify_event("kill", {"process_pid": child_pid,
+                                  "time": time.time()})
+                try:
+                  process.send_signal_child(child_pid, sig)
+                except NoSuchProcess:
+                  self.notify_event("kill-failed", {"process_pid": child_pid,
                                   "time": time.time()})
 
             # now sending the signal to the process itself
